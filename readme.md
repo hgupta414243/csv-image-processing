@@ -7,9 +7,8 @@ This file provides detailed API documentation with specifications for endpoints,
 ```markdown
 # Image Processing System API Documentation
 
-**Base URL**: `http://localhost:3000/api`  
+**Base URL**: `https://csv-image-processing.vercel.app/api`  
 **Version**: 1.0.0  
-**Date**: February 28, 2025  
 
 This API enables uploading CSV files with image URLs, processing images asynchronously, and checking processing status. All responses are in JSON format.
 
