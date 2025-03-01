@@ -1,7 +1,7 @@
 const express = require("express");
 const Request = require("../models/Request");
 const ImageKit = require("imagekit");
-require("dotenv").config()
+require("dotenv").config();
 
 var imagekit = new ImageKit({
   publicKey: process.env.publicKey,
@@ -19,10 +19,9 @@ const processImages = async (req, res, requestId) => {
     const processedProducts = await Promise.all(
       request.products.map(async (product) => {
         const outputUrls = await Promise.all(
-          product.inputImageUrls.map(async (inputUrl, index) => {
-            const outputUrls = await uploadProcessedImage(inputUrl, index + 1);
-            return outputUrls;
-          })
+          product.inputImageUrls.map((inputUrl, index) =>
+            uploadProcessedImage(inputUrl, index + 1)
+          )
         );
         return {
           ...product._doc,
@@ -51,22 +50,22 @@ const processImages = async (req, res, requestId) => {
   }
 };
 
-const uploadProcessedImage = async (urls, index) => {
-  const res = await fetch(urls);
-  const buffer = await res.arrayBuffer();
-  const imageBuffer = Buffer.from(buffer, "binary");
+const uploadProcessedImage = async (url, index) => {
+  try {
+    const res = await fetch(url);
 
-  const uploadResponse = await imagekit.upload({
-    file: imageBuffer,
-    fileName: `output-url-${index}.jpg`,
-    folder: "/output-image",
-  });
+    if (!res.body) throw new Error("Failed to fetch image");
 
-  const transformedUrl = imagekit.url({
-    path: uploadResponse.filePath,
-  });
+    const uploadResponse = await imagekit.upload({
+      file: res.body, // Stream directly instead of buffering
+      fileName: `output-url-${index}.jpg`,
+      folder: "/output-image",
+    });
 
-  return transformedUrl;
+    return imagekit.url({ path: uploadResponse.filePath });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = {
