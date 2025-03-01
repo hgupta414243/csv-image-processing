@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+require("dotenv").config()
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/image-processing');
+    await mongoose.connect(process.env.ATLAS_URL);
     console.log('MongoDB connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);

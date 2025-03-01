@@ -10,9 +10,9 @@ const uploadFile = async (req, res) => {
       requestId,
       products: req.parsedCSV,
     });
+    await request.save();
 
     imageProcessor.processImages(req, res, requestId);
-    await request.save();
   } catch (error) {
     res.status(500).json({ error: "Failed to process upload" });
   }
